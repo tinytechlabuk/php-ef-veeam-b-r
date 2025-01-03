@@ -1,6 +1,6 @@
 <?php
 
-class veeamPlugin extends Plugin {
+class veeamPlugin extends ib {
     private $config;
     private $api;
     private $token;
