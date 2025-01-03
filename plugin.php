@@ -1,4 +1,19 @@
 <?php
+// **
+// USED TO DEFINE PLUGIN INFORMATION & CLASS
+// **
+
+// PLUGIN INFORMATION - This should match what is in plugin.json
+$GLOBALS['plugins']['veeamPlugin'] = [ // Plugin Name
+	'name' => 'veeamPlugin', // Plugin Name
+	'author' => 'TinyTechLabUK', // Who wrote the plugin
+	'category' => 'Veeam B&R', // One to Two Word Description
+	'link' => 'https://github.com/tinytechlabuk/php-ef-veeam-b-r', // Link to plugin info
+	'version' => '1.0.0', // SemVer of plugin
+	'image' => 'logo.png', // 1:1 non transparent image for plugin
+	'settings' => true, // does plugin need a settings modal?
+	'api' => '/api/plugin/awx/settings', // api route for settings page, or null if no settings page
+];
 
 class veeamPlugin extends ib {
     private $config;
