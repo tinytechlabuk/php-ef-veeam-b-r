@@ -1,6 +1,6 @@
 [
     {
-      "name": "veeamPlugin",
+      "name": "VeeamPlugin",
       "repo": "https://github.com/tinytechlabuk/php-ef-veeam-b-r",
       "author": "TinyTechLabUK",
       "category": "Veeam B&R",

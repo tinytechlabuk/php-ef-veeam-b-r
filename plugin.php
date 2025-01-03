@@ -4,21 +4,40 @@
 // **
 
 // PLUGIN INFORMATION - This should match what is in plugin.json
-$GLOBALS['plugins']['veeamPlugin'] = [ // Plugin Name
-	'name' => 'veeamPlugin', // Plugin Name
+$GLOBALS['plugins']['VeeamPlugin'] = [ // Plugin Name
+	'name' => 'VeeamPlugin', // Plugin Name
 	'author' => 'TinyTechLabUK', // Who wrote the plugin
 	'category' => 'Veeam B&R', // One to Two Word Description
 	'link' => 'https://github.com/tinytechlabuk/php-ef-veeam-b-r', // Link to plugin info
 	'version' => '1.0.0', // SemVer of plugin
 	'image' => 'logo.png', // 1:1 non transparent image for plugin
 	'settings' => true, // does plugin need a settings modal?
-	'api' => '/api/plugin/veeamPlugin/settings', // api route for settings page, or null if no settings page
+	'api' => '/api/plugin/VeeamPlugin/settings', // api route for settings page, or null if no settings page
 ];
 
-class veeamPlugin extends ib {
+class VeeamPlugin extends ib {
 
-    public function _pluginGetSettings() {
-        return array(
+	public function __construct() {
+		parent::__construct();
+	}
+
+	public function _pluginGetSettings() {
+		$VeeamPlugin = new VeeamPlugin();
+		$VeeamPluginLabels = $VeeamPlugin->GetVeeamPluginLabels() ?? null;
+		$VeeamPluginLabelsKeyValuePairs = [];
+		$VeeamPluginLabelsKeyValuePairs[] = [
+			"name" => "None",
+			"value" => ""
+		];
+		if ($VeeamPluginLabels) {
+			$VeeamPluginLabelsKeyValuePairs = array_merge($VeeamPluginLabelsKeyValuePairs,array_map(function($item) {
+				return [
+					"name" => $item['name'],
+					"value" => $item['name']
+				];
+			}, $VeeamPluginLabels));
+		}
+		return array(
             'Plugin Settings' => array(
                 $this->settingsOption('auth', 'ACL-READ', ['label' => 'VEEAM B&R Read ACL']),
                 $this->settingsOption('auth', 'ACL-WRITE', ['label' => 'VEEAM B&R Write ACL']),
