@@ -16,15 +16,6 @@ $GLOBALS['plugins']['veeamPlugin'] = [ // Plugin Name
 ];
 
 class veeamPlugin extends ib {
-    private $config;
-    private $api;
-    private $token;
-
-    public function __construct($api) {
-        $this->api = $api;
-        $this->config = $api->config;
-        $this->token = null;
-    }
 
     public function _pluginGetSettings() {
         return array(
@@ -50,6 +41,18 @@ class veeamPlugin extends ib {
             )
         );
     }
+
+    // private $config;
+    // private $api;
+    // private $token;
+
+    // public function __construct($api) {
+    //     $this->api = $api;
+    //     $this->config = $api->config;
+    //     $this->token = null;
+    // }
+
+
 
 //     private function authenticate() {
 //         $veeamConfig = $this->config->get("Plugins", "veeam-b-r");
