@@ -51,98 +51,98 @@ class veeamPlugin extends ib {
         );
     }
 
-    private function authenticate() {
-        $veeamConfig = $this->config->get("Plugins", "veeam-b-r");
-        $veeamUrl = $veeamConfig["Veeam-URL"] ?? null;
-        $username = $veeamConfig["Veeam-Username"] ?? null;
-        $password = $veeamConfig["Veeam-Password"] ?? null;
+//     private function authenticate() {
+//         $veeamConfig = $this->config->get("Plugins", "veeam-b-r");
+//         $veeamUrl = $veeamConfig["Veeam-URL"] ?? null;
+//         $username = $veeamConfig["Veeam-Username"] ?? null;
+//         $password = $veeamConfig["Veeam-Password"] ?? null;
 
-        if (!$veeamUrl || !$username || !$password) {
-            $this->api->setAPIResponse('Error', 'VEEAM configuration missing');
-            return false;
-        }
+//         if (!$veeamUrl || !$username || !$password) {
+//             $this->api->setAPIResponse('Error', 'VEEAM configuration missing');
+//             return false;
+//         }
 
-        // Build authentication request
-        $authUrl = rtrim($veeamUrl, '/') . '/api/sessionMngr/?v=latest';
-        $headers = [
-            'Authorization' => 'Basic ' . base64_encode("$username:$password"),
-            'Content-Type' => 'application/json',
-            'X-API-Version' => '1.0-rev1'
-        ];
+//         // Build authentication request
+//         $authUrl = rtrim($veeamUrl, '/') . '/api/sessionMngr/?v=latest';
+//         $headers = [
+//             'Authorization' => 'Basic ' . base64_encode("$username:$password"),
+//             'Content-Type' => 'application/json',
+//             'X-API-Version' => '1.0-rev1'
+//         ];
 
-        try {
-            $result = $this->api->query->post($authUrl, "", $headers, null, true);
-            if ($result && $result->headers && isset($result->headers['X-RestSvcSessionId'])) {
-                $this->token = $result->headers['X-RestSvcSessionId'][0];
-                return true;
-            }
-        } catch (Exception $e) {
-            $this->api->setAPIResponse('Error', 'Authentication failed: ' . $e->getMessage());
-            return false;
-        }
+//         try {
+//             $result = $this->api->query->post($authUrl, "", $headers, null, true);
+//             if ($result && $result->headers && isset($result->headers['X-RestSvcSessionId'])) {
+//                 $this->token = $result->headers['X-RestSvcSessionId'][0];
+//                 return true;
+//             }
+//         } catch (Exception $e) {
+//             $this->api->setAPIResponse('Error', 'Authentication failed: ' . $e->getMessage());
+//             return false;
+//         }
 
-        $this->api->setAPIResponse('Error', 'Authentication failed');
-        return false;
-    }
+//         $this->api->setAPIResponse('Error', 'Authentication failed');
+//         return false;
+//     }
 
-    private function queryVeeam($method, $uri, $data = "") {
-        if (!$this->token && !$this->authenticate()) {
-            return false;
-        }
+//     private function queryVeeam($method, $uri, $data = "") {
+//         if (!$this->token && !$this->authenticate()) {
+//             return false;
+//         }
 
-        $veeamConfig = $this->config->get("Plugins", "veeam-b-r");
-        $veeamUrl = $veeamConfig["Veeam-URL"] ?? null;
+//         $veeamConfig = $this->config->get("Plugins", "veeam-b-r");
+//         $veeamUrl = $veeamConfig["Veeam-URL"] ?? null;
 
-        if (!$veeamUrl) {
-            $this->api->setAPIResponse('Error', 'VEEAM URL Missing');
-            return false;
-        }
+//         if (!$veeamUrl) {
+//             $this->api->setAPIResponse('Error', 'VEEAM URL Missing');
+//             return false;
+//         }
 
-        $headers = [
-            'X-RestSvcSessionId' => $this->token,
-            'Content-Type' => 'application/json'
-        ];
+//         $headers = [
+//             'X-RestSvcSessionId' => $this->token,
+//             'Content-Type' => 'application/json'
+//         ];
 
-        $url = rtrim($veeamUrl, '/') . '/api/' . ltrim($uri, '/');
+//         $url = rtrim($veeamUrl, '/') . '/api/' . ltrim($uri, '/');
         
-        try {
-            $result = $this->api->query->$method($url, $data, $headers, null, true);
-            if ($result && $result->body) {
-                $output = json_decode($result->body, true);
-                $this->api->setAPIResponseData($output);
-                return $output;
-            }
-        } catch (Exception $e) {
-            $this->api->setAPIResponse('Error', 'API request failed: ' . $e->getMessage());
-            return false;
-        }
+//         try {
+//             $result = $this->api->query->$method($url, $data, $headers, null, true);
+//             if ($result && $result->body) {
+//                 $output = json_decode($result->body, true);
+//                 $this->api->setAPIResponseData($output);
+//                 return $output;
+//             }
+//         } catch (Exception $e) {
+//             $this->api->setAPIResponse('Error', 'API request failed: ' . $e->getMessage());
+//             return false;
+//         }
 
-        return false;
-    }
+//         return false;
+//     }
 
-    public function GetBackupHistory() {
-        // Get jobs from the last month
-        $thirtyDaysAgo = date('Y-m-d', strtotime('-30 days'));
-        $result = $this->queryVeeam(
-            "get", 
-            "reports/summary/job_statistics?fromTime=$thirtyDaysAgo"
-        );
+//     public function GetBackupHistory() {
+//         // Get jobs from the last month
+//         $thirtyDaysAgo = date('Y-m-d', strtotime('-30 days'));
+//         $result = $this->queryVeeam(
+//             "get", 
+//             "reports/summary/job_statistics?fromTime=$thirtyDaysAgo"
+//         );
 
-        if ($result) {
-            return $result;
-        }
+//         if ($result) {
+//             return $result;
+//         }
 
-        $this->api->setAPIResponse('Warning', 'No backup history returned from the API');
-        return false;
-    }
+//         $this->api->setAPIResponse('Warning', 'No backup history returned from the API');
+//         return false;
+//     }
 
-    public function GetJobDetails($jobId) {
-        $result = $this->queryVeeam("get", "jobs/$jobId");
-        if ($result) {
-            return $result;
-        }
+//     public function GetJobDetails($jobId) {
+//         $result = $this->queryVeeam("get", "jobs/$jobId");
+//         if ($result) {
+//             return $result;
+//         }
 
-        $this->api->setAPIResponse('Warning', 'No job details returned from the API');
-        return false;
-    }
-}
+//         $this->api->setAPIResponse('Warning', 'No job details returned from the API');
+//         return false;
+//     }
+// }
