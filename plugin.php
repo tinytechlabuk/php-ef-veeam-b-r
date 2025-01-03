@@ -12,7 +12,7 @@ $GLOBALS['plugins']['veeamPlugin'] = [ // Plugin Name
 	'version' => '1.0.0', // SemVer of plugin
 	'image' => 'logo.png', // 1:1 non transparent image for plugin
 	'settings' => true, // does plugin need a settings modal?
-	'api' => '/api/plugin/awx/settings', // api route for settings page, or null if no settings page
+	'api' => '/api/plugin/veeamPlugin/settings', // api route for settings page, or null if no settings page
 ];
 
 class veeamPlugin extends ib {
