@@ -28,7 +28,7 @@ class veeamPlugin extends ib {
             'VEEAM B&R Settings' => array(
                 $this->settingsOption('url', 'Veeam-URL', [
                     'label' => 'VEEAM B&R URL',
-                    'description' => 'The URL of your VEEAM Enterprise Manager (e.g., https://veeam.company.com)'
+                    'description' => 'The URL of your VEEAM Enterprise Manager (e.g., https://veeamURL:PORT)'
                 ]),
                 $this->settingsOption('text', 'Veeam-Username', [
                     'label' => 'VEEAM Username',
@@ -41,7 +41,7 @@ class veeamPlugin extends ib {
             )
         );
     }
-
+}
     // private $config;
     // private $api;
     // private $token;
